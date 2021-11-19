@@ -31,7 +31,7 @@ spec:
   maxReplicas: 5
   source: kyma
   type: git
-  reference: master
+  reference: main
   baseDir: NewInBTP
 ---
 apiVersion: gateway.kyma-project.io/v1alpha1
