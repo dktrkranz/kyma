@@ -1,0 +1,40 @@
+apiVersion: serverless.kyma-project.io/v1alpha1
+kind: GitRepository
+metadata:
+  name: kyma
+  namespace: apps
+spec:
+  url: https://github.com/dktrkranz/kyma.git
+---
+apiVersion: serverless.kyma-project.io/v1alpha1
+kind: Function
+metadata:
+  name: x-networkmanager-status
+  namespace: apps
+spec:
+  runtime: nodejs14
+  minReplicas: 1
+  maxReplicas: 1
+  source: kyma
+  type: git
+  reference: main
+  baseDir: X-NetworkManager-Status
+---
+apiVersion: gateway.kyma-project.io/v1alpha1
+kind: APIRule
+metadata:
+  name: x-networkmanager-status
+  namespace: apps
+spec:
+  gateway: kyma-gateway.kyma-system.svc.cluster.local
+  rules:
+  - accessStrategies:
+    - config: {}
+      handler: allow
+    methods:
+    - GET
+    path: /.*
+  service:
+    host: x-networkmanager-status.ddfb75c.kyma.shoot.live.k8s-hana.ondemand.com
+    name: x-networkmanager-status
+    port: 80
