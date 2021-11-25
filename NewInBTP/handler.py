@@ -74,10 +74,11 @@ def generate_feed():
                  '<rss version="2.0">',
                  '<channel>',
                  '  <title>What\'s new for SAP BTP</title>',
+                 '  <description>What\'s new for SAP BTP</description>',
                  '  <link>https://help.sap.com/doc/'
                  '43b304f99a8145809c78f292bfc0bc58/Cloud/en-US/'
                  '98bf747111574187a7c76f8ced51cfeb.html</link>',
-                 f'<lastBuildDate>{build}</lastBuildDate>'))
+                 f'<lastBuildDate>{build} +0000</lastBuildDate>'))
 
     for row in r.json()['message']['data']:
         pubDate = datetime.strptime(row['Valid_as_Of'], '%Y‑%m‑%d')
@@ -88,7 +89,7 @@ def generate_feed():
             body += join(('  <item>',
                           f'    <title>{title}</title>',
                           f'    <description>{description}</description>',
-                          f'    <pubDate>{pubDate}</pubDate>',
+                          f'    <pubDate>{pubDate} +0000</pubDate>',
                           '  </item>'))
 
     body += join(('</channel>', '</rss>'))
