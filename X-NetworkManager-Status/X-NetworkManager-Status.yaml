@@ -35,6 +35,6 @@ spec:
     - GET
     path: /.*
   service:
-    host: x-networkmanager-status.ddfb75c.kyma.shoot.live.k8s-hana.ondemand.com
+    host: x-networkmanager-status.ce01c7f.kyma.shoot.live.k8s-hana.ondemand.com
     name: x-networkmanager-status
     port: 80
