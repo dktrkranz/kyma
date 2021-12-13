@@ -49,6 +49,6 @@ spec:
     - GET
     path: /.*
   service:
-    host: newinbtp.ce01c7f.kyma.shoot.live.k8s-hana.ondemand.com
+    host: newinbtp.ce01c7f.kyma.ondemand.com
     name: newinbtp
     port: 80
