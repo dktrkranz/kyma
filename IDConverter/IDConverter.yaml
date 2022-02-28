@@ -22,11 +22,11 @@ spec:
       memory: 700Mi
   resources:
     limits:
-      cpu: 400m
-      memory: 512Mi
+      cpu: 100m
+      memory: 128Mi
     requests:
-      cpu: 200m
-      memory: 256Mi
+      cpu: 50m
+      memory: 64Mi
   minReplicas: 3
   maxReplicas: 5
   source: kyma
