@@ -81,7 +81,11 @@ def generate_feed():
                  f'<lastBuildDate>{build} +0000</lastBuildDate>'))
 
     for row in r.json()['message']['data']:
-        pubDate = datetime.strptime(row['Valid_as_Of'], '%Y‑%m‑%d')
+        try:
+            pubDate = datetime.strptime(sub(r'[^\x00-\x7F]+','-',
+                                        row['Valid_as_Of']), '%Y-%m-%d')
+        except ValueError:
+            continue
         if pubDate <= now:
             title = f'{esc(" & ".join(row["Component"]))}: {esc(row["Title"])}'
             description = esc(sub(cHTML, '', row['Description']))
