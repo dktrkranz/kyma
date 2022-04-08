@@ -27,8 +27,8 @@ spec:
     requests:
       cpu: 50m
       memory: 64Mi
-  minReplicas: 3
-  maxReplicas: 5
+  minReplicas: 1
+  maxReplicas: 1
   source: kyma
   type: git
   reference: main
