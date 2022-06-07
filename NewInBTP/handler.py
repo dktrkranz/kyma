@@ -4,58 +4,96 @@ from requests import post
 from xml.sax.saxutils import escape as esc
 
 
-form = {
-    "draw": "1",
-    "columns[0][data]": "Component",
-    "columns[0][name]": "Component",
-    "columns[0][searchable]": "true",
-    "columns[0][orderable]": "true",
-    "columns[0][search][regex]": "false",
-    "columns[1][data]": "Capability",
-    "columns[1][name]": "Capability",
-    "columns[1][searchable]": "false",
-    "columns[1][orderable]": "false",
-    "columns[1][search][regex]": "false",
-    "columns[2][data]": "Environment",
-    "columns[2][name]": "Environment",
-    "columns[2][searchable]": "true",
-    "columns[2][orderable]": "true",
-    "columns[2][search][regex]": "false",
-    "columns[3][data]": "Title",
-    "columns[3][name]": "Title",
-    "columns[3][searchable]": "true",
-    "columns[3][orderable]": "true",
-    "columns[3][search][regex]": "false",
-    "columns[4][data]": "Description",
-    "columns[4][name]": "Description",
-    "columns[4][searchable]": "true",
-    "columns[4][orderable]": "true",
-    "columns[4][search][regex]": "false",
-    "columns[5][data]": "Action",
-    "columns[5][name]": "Action",
-    "columns[5][searchable]": "true",
-    "columns[5][orderable]": "true",
-    "columns[5][search][regex]": "false",
-    "columns[6][data]": "Type",
-    "columns[6][name]": "Type",
-    "columns[6][searchable]": "true",
-    "columns[6][orderable]": "true",
-    "columns[6][search][regex]": "false",
-    "columns[7][data]": "Valid_as_Of",
-    "columns[7][name]": "Valid_as_Of",
-    "columns[7][searchable]": "false",
-    "columns[7][orderable]": "false",
-    "columns[7][search][regex]": "true",
-    "order[0][column]": "7",
-    "order[0][dir]": "desc",
-    "order[1][column]": "0",
-    "order[1][dir]": "asc",
-    "order[2][column]": "3",
-    "order[2][dir]": "asc",
-    "start": "0",
-    "length": "-1",
-    "search[regex]": "false",
+payload = '''
+{
+    "locale": "en-US",
+    "state": "PRODUCTION",
+    "from": 0,
+    "size": 911,
+    "sort": [
+        {
+            "name": "Valid_as_Of",
+            "direction": "DESC"
+        },
+        {
+            "name": "Software_Lifecycle",
+            "direction": "ASC"
+        },
+        {
+            "name": "Action",
+            "direction": "DESC"
+        },
+        {
+            "name": "Component",
+            "direction": "ASC"
+        },
+        {
+            "name": "Title",
+            "direction": "ASC"
+        }
+    ],
+    "columns": [
+        {
+            "name": "Component",
+            "query": []
+        },
+        {
+            "name": "Environment",
+            "query": []
+        },
+        {
+            "name": "Title",
+            "query": []
+        },
+        {
+            "name": "Description",
+            "query": []
+        },
+        {
+            "name": "Action",
+            "query": []
+        },
+        {
+            "name": "Software_Lifecycle",
+            "query": []
+        },
+        {
+            "name": "Type",
+            "query": []
+        },
+        {
+            "name": "Line_of_Business",
+            "query": [],
+            "tableSearch": 0
+        },
+        {
+            "name": "Sub_Process",
+            "query": [],
+            "tableSearch": 0
+        },
+        {
+            "name": "Valid_as_Of",
+            "dateFrom": "1970-01-01",
+            "dateTo": "2099-12-31",
+            "tableSearch": 0
+        },
+        {
+            "name": "outputloio",
+            "query": [
+                "922bf2dbe0b646aaaa8cb5e077cfd799",
+                "b078c7aa93ed4fc391e3323b7a255b84",
+                "46aded7ad9cf4faebc6cb40af8104df3"
+            ],
+            "tableSearch": 0
+        },
+        {
+            "name": "deliverable.version",
+            "query": [],
+            "tableSearch": 0
+        }
+    ]
 }
+'''
 
 
 def join(elements):
@@ -66,9 +104,7 @@ def generate_feed():
     now = datetime.now()
     cHTML = compile('<.*?>')
 
-    r = post(('https://help.sap.com/http.svc/datatables?'
-              'deliverable=43b304f99a8145809c78f292bfc0bc58&'
-              'version=Cloud&language=en-US&datafile=wn.json'), data=form)
+    r = post('https://help.sap.com/http.svc/whatsnew', data=payload)
     build = datetime.now().strftime('%a, %d %b %Y %H:%M:%S %Z').strip()
     body = join(('<?xml version="1.0" encoding="UTF-8" ?>',
                  '<rss version="2.0">',
@@ -80,9 +116,9 @@ def generate_feed():
                  '98bf747111574187a7c76f8ced51cfeb.html</link>',
                  f'<lastBuildDate>{build} +0000</lastBuildDate>'))
 
-    for row in r.json()['message']['data']:
+    for row in r.json()['data']['results']:
         try:
-            pubDate = datetime.strptime(sub(r'[^\x00-\x7F]+','-',
+            pubDate = datetime.strptime(sub(r'[^\x00-\x7F]+', '-',
                                         row['Valid_as_Of']), '%Y-%m-%d')
         except ValueError:
             continue
